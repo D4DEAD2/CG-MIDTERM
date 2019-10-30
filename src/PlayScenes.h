@@ -18,6 +18,8 @@ class OnePlayer: public PlayScene {
 public:
 	OnePlayer();
 
+	void die();
+
 	// Inherited via Scene
 	virtual void InputHandle(GLFWwindow* window, glm::vec2 mousePos, float dt) override;
 	virtual void KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player, float dt) override;
