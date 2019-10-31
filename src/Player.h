@@ -10,27 +10,34 @@ class Segment : public Object{
 	Segment* next = nullptr;
 
 public:
+	Segment();
+	Segment(Mesh* me, Material* ma, Hitbox* hb);
+	Segment(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos);
+	~Segment();
+
+
+	//Inherited?
+	virtual void Update(float dt) = 0;
 	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
 };
 
 class Player
 {
-	Mesh* mesh;
-	Material* material;
-	Transform transform;
 	int lives;
 	float speed;
-
+	int size = 0;
 	Segment* head;
 
 public:
-	Hitbox* hitbox;
 
-	Player();
 	Player(Mesh* me, Material* ma, Hitbox* hb);
-	Player(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos);
+	~Player();
 
+
+	void Add(Mesh* me, Material* ma, Hitbox* hb);
+	int Size() { return size; }
 	void Move(glm::vec3 dir, float spd);
 	void Draw(Shader* shdr, std::vector<Camera*> cam);
+
 
 };

@@ -1,7 +1,17 @@
 #include "Player.h"
 
 
-Player::Player()
+Player::Player(Mesh* me, Material* ma, Hitbox* hb)
+{
+	size = 1;
+
+}
+
+Player::~Player()
+{
+}
+
+Segment::Segment()
 {
 	mesh = nullptr;
 	material = nullptr;
@@ -11,7 +21,7 @@ Player::Player()
 	transform.rotation = glm::vec3();
 }
 
-Player::Player(Mesh* me, Material* ma, Hitbox* hb)
+Segment::Segment(Mesh* me, Material* ma, Hitbox* hb)
 {
 	mesh = me;
 	material = ma;
@@ -21,7 +31,7 @@ Player::Player(Mesh* me, Material* ma, Hitbox* hb)
 	transform.rotation = glm::vec3();
 }
 
-Player::Player(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos)
+Segment::Segment(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos)
 {
 	mesh = me;
 	material = ma;
@@ -31,11 +41,26 @@ Player::Player(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos)
 	transform.rotation = glm::vec3();
 }
 
+Segment::~Segment()
+{
+}
+
 void Segment::Draw(Shader* shdr, std::vector<Camera*> cam)
 {
 	Object::Draw(shdr, cam);
 	if (next != nullptr)
 		next->Draw(shdr, cam);
+}
+
+void Player::Add(Mesh* me, Material* ma, Hitbox* hb)
+{
+	size++;
+	Segment next(Mesh * me, Material * ma, Hitbox * hb);
+}
+
+void Player::Move(glm::vec3 dir, float spd)
+{
+	
 }
 
 void Player::Draw(Shader* shdr, std::vector<Camera*> cam)
