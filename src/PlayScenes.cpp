@@ -15,6 +15,8 @@
 #include"Constants.h"
 #include"Test_Primitives.h"
 #include"Hitbox.h"
+#include "LinkedList.h"
+#include "Player.h"
 
 
 OnePlayer::OnePlayer()
@@ -194,6 +196,17 @@ void OnePlayer::LoadScene()
 	players[PLAYER_1]->Scale({ 0.75f,0.75f,0.75f });
 	players[PLAYER_1]->Move({ 0.0f, 0.3f, 0.0f });
 
+	Player play1(Square, DiceTex, basicCubeHB);
+
+	//LinkedList<Object*> stuff;
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
+
 	Object* pellet = new Object(Square, defaultTex, basicCubeHB);
 
 	float random1 = (rand() % (10 - (-10))) + (-10);
@@ -233,6 +246,7 @@ void OnePlayer::LoadScene()
 	floor->Scale({ 30.0f, 0.5f, 30.0f });
 
 	terrain.push_back(floor);
+
 
 	Cam = {
 		new Camera(glm::vec3(0.0f, 23.0f, 5.0f), {0.0f, 0.0f, 0.0f}, glm::vec4(0,0, SCREEN_WIDTH, SCREEN_HEIGHT))

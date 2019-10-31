@@ -4,38 +4,39 @@ template<class T>
 class Link {
 private:
 	T value;
-	Link* next = nullptr;
+	Link<T>* next = nullptr;
 public:
 	Link(T val) { value = val; }
 	T GetValue() { return value; }
-	Link* GetNext() { return next; }
-	void SetNext(Link* n) { next = n; }
+	Link<T>* GetNext() { return next; }
+	void SetNext(Link<T>* n) { next = n; }
 };
 
 template<class T>
 class LinkedList {
-	Link* start = nullptr;
-	Link* cur = nullptr;
+	Link<T>* start = nullptr;
+	Link<T>* cur = nullptr;
 	int size = 0;
 public:
 	LinkedList() {};
 
 	int Size() { return size; }
+
 	void Add(T val) {
 		if (size <= 0) {
-			start = new Link(val);
+			start = new Link<T>(val);
 		}
 		else {
 			cur = start;
-			for (int c = 0; c < size; c++) {
+			while (cur->GetNext() != nullptr) {
 				cur = cur->GetNext();
 			}
-			cur->SetNext(new Link(val));
+			cur->SetNext(new Link<T>(val));
 		}
 		size++;
 	};
 
-	Link* At(int id) {
+	Link<T>* At(int id) {
 		if (id < size) {
 			cur = start;
 			for (int c = 0; c < id; c++) {
@@ -46,9 +47,9 @@ public:
 	}
 };
 
-class Object;
-LinkedList<Object*> myLinkedList;
-
-class Player : public LinkedList<Object*> {
-
-};
+//class Object;
+//LinkedList<Object*> myLinkedList;
+//
+//class Player : public LinkedList<Object*> {
+//
+//};

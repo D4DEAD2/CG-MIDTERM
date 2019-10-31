@@ -37,7 +37,6 @@ protected:
 	Transform transform;
 	bool isPellet = false;
 	bool isBody = false;
-	glm::vec3 lastPos = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 public:
