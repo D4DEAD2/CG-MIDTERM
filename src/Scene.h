@@ -10,6 +10,7 @@ class Shader;
 class Object;
 class PointLight;
 class DirectionalLight;
+class Player;
 
 class SceneD {
 public:
@@ -76,7 +77,8 @@ class PlayScene : public Scene {
 protected:
 	std::vector<Object*> players;
 	std::vector<Object*> bodyParts;
-	std::vector<Object*> terrain;
+	std::vector<Object*> terrain; //tia // pellets are terrain
+	Player* play1;
 
 	std::vector<PointLight*> lights;
 	DirectionalLight * sun;

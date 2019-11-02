@@ -55,7 +55,7 @@ public:
 	void setLast(glm::vec3 _pos); //
 	void setPos(glm::vec3 _pos);
 	glm::vec3 getLast();			///
-	void setPellet(bool _val);		///
+	void setPellet(bool _val);		///tia
 	bool getPellet();
 	void setBody(bool _val);
 	bool getBody(); //

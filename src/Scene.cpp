@@ -5,6 +5,7 @@
 #include"Object.h"
 #include"Light.h"
 #include "Constants.h"
+#include "Player.h"
 
 void MenuScene::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player, float dt)
 {
@@ -98,10 +99,11 @@ void PlayScene::ControllerInput(unsigned int controller, int player, float dt)
 
 void PlayScene::RenderScene(Shader* shader)
 {
-	for (int c = 0; c < players.size(); c++) {
-		players[c]->Draw(shader, Cam);
-	}
+	//for (int c = 0; c < players.size(); c++) {
+	//	players[c]->Draw(shader, Cam);
+	//}
 
+	//tia //terrain is walls AND pellets.
 	for (int t = 0; t < terrain.size(); t++) {
 		terrain[t]->Draw(shader, Cam);
 	}
@@ -109,4 +111,7 @@ void PlayScene::RenderScene(Shader* shader)
 	for (int b = 0; b < bodyParts.size(); b++) {
 		bodyParts[b]->Draw(shader, Cam);
 	}
+
+	play1->Draw(shader, Cam);
+	
 }

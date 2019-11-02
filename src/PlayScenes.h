@@ -3,6 +3,8 @@
 
 class Light;
 class Mesh;
+class Material;
+class Hitbox;
 
 class OnePlayer: public PlayScene {
 	Shader* shaderObj;
@@ -11,9 +13,15 @@ class OnePlayer: public PlayScene {
 
 	Shader* DebugShader;
 	Mesh* DebugQuad;
+
+	Mesh* tail_mesh;
+	Material* tail_mat;
+	Hitbox* tail_hit;
+
 	bool debug = false;
 	bool f3_pressed;
 	int disp_depth = 0;
+	float move_count = 0.0f;
 
 public:
 	OnePlayer();

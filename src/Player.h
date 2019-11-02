@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GLM/glm.hpp"
 #include "Object.h"
 #include<vector>
 
@@ -8,6 +8,8 @@ class Camera;
 class Segment : public Object{
 
 	Segment* next = nullptr;
+	glm::vec3 nextMove = glm::vec3(0.0f);
+	glm::vec3 curMove = glm::vec3(0.0f);
 
 public:
 	Segment();
@@ -17,27 +19,41 @@ public:
 
 
 	//Inherited?
-	virtual void Update(float dt) = 0;
+	virtual void Update(float dt);
 	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
+	void Move(glm::vec3 dir);
+	void Scale(glm::vec3 scl);
+	Segment* GetNext() { return next; }
+	void SetNext(Segment* s) { next = s; }
+
+	void SetNextMv(glm::vec3);
+	void ApplyMv();
+
+	Transform GetTransform() { return transform; }
 };
 
 class Player
 {
 	int lives;
-	float speed;
+	//float speed;
 	int size = 0;
 	Segment* head;
 
 public:
 
+	Player();
 	Player(Mesh* me, Material* ma, Hitbox* hb);
 	~Player();
 
 
 	void Add(Mesh* me, Material* ma, Hitbox* hb);
 	int Size() { return size; }
-	void Move(glm::vec3 dir, float spd);
+	void Move(glm::vec3 dir);
+	void Scale(glm::vec3 scl);
 	void Draw(Shader* shdr, std::vector<Camera*> cam);
+	Segment* getHead();
+	void setPos(glm::vec3 _pos);
 
+	Transform GetTransform() { return head->GetTransform(); }
 
 };

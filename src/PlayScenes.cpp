@@ -57,13 +57,13 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 {
 	static glm::vec3 m = glm::vec3(0.0f, 0.0f, 0.0f);
 	
-	if (bodyParts.size() > 0) {
-		bodyParts[0]->setLast(m); //find the last position before m actually changes to the new direction
-	}
-	for (int b = 1; b < bodyParts.size(); b++) {
-		int l = b - 1;
-		bodyParts[b]->setLast(bodyParts[l]->getLast()); //find the last positions of other body parts
-	}
+	//if (bodyParts.size() > 0) {
+	//	bodyParts[0]->setLast(m); //find the last position before m actually changes to the new direction
+	//}
+	//for (int b = 1; b < bodyParts.size(); b++) {
+	//	int l = b - 1;
+	//	bodyParts[b]->setLast(bodyParts[l]->getLast()); //find the last positions of other body parts
+	//}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -74,40 +74,47 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		m = glm::vec3(1.0f, 0.0f, 0.0f);
 	if (m.x != 0.0f || m.y != 0.0f || m.z != 0.0f) {
-		//players[PLAYER_1]->setLast(players[PLAYER_1]->GetPosition());
-		players[PLAYER_1]->Move(m * PLAYER_SPEED * dt);
-		for (int b = 0; b < bodyParts.size(); b++) {
-			bodyParts[b]->Move(bodyParts[b]->getLast() * PLAYER_SPEED * dt); // move body in the past directions to generate a follow
-
-			if (players[PLAYER_1]->hitbox->HitDetect(players[PLAYER_1]->GetTransform(), (CubeHitbox*)(bodyParts[b]->hitbox), bodyParts[b]->GetTransform())) {
-				die();
-			}
+		if (move_count > 0.1) {
+			play1->Move(m * PLAYER_SPEED);
+			move_count = 0;
 		}
+		else {
+			move_count += dt;
+		}
+		//for (int b = 0; b < bodyParts.size(); b++) {
+		//	bodyParts[b]->Move(bodyParts[b]->getLast() * PLAYER_SPEED * dt); // move body in the past directions to generate a follow
+		//
+		//	if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(bodyParts[b]->hitbox), bodyParts[b]->GetTransform())) {
+		//		die();
+		//	}
+		//}
 
 		for (int i = 0; i < terrain.size(); i++) {
-			if (players[PLAYER_1]->hitbox->HitDetect(players[PLAYER_1]->GetTransform(), (CubeHitbox*)(terrain[i]->hitbox), terrain[i]->GetTransform())) {
+			if (players[PLAYER_1]->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(terrain[i]->hitbox), terrain[i]->GetTransform())) {
 				//std::cout << ("HIT DETECTED");
 				if (!terrain[i]->getPellet()) {
 					//players[PLAYER_1]->Move(m * -1.0f * PLAYER_SPEED * dt);  //This WOULD make the player stop when touching an object/wall
 					die();
 				} 
 				else {
-
+					//Tia // randomly places pellets, and spawns them
 					glm::vec3 n = glm::vec3(0.0f, 0.6f, 0.0f);
 					float random1 = (rand() % (10 - (-10))) + (-10);
 					float random2 = (rand() % (7 - (-7))) + (-7);
 					n += glm::vec3(random1, 0.0f, random2);
 					terrain[i]->setPos(n);
+
+					play1->Add(tail_mesh, tail_mat, tail_hit);
 					
-					Material* defaultTex = new Material("default-texture.png", "default-texture.png");
-					Hitbox* basicCubeHB = new CubeHitbox(1.0f, 1.0f, 1.0f);
-					Mesh* Square = new Mesh("d6.obj");
-					Object* player = new Object(Square, defaultTex, basicCubeHB);
-					player->Move({ players[PLAYER_1]->GetPosition() });
-					player->Scale({ 0.75f,0.75f,0.75f });
-					player->setBody(true);
-					
-					bodyParts.push_back(player);
+					//Material* defaultTex = new Material("default-texture.png", "default-texture.png");
+					//Hitbox* basicCubeHB = new CubeHitbox(1.0f, 1.0f, 1.0f);
+					//Mesh* Square = new Mesh("d6.obj");
+					//Object* player = new Object(Square, defaultTex, basicCubeHB);
+					//player->Move({ players[PLAYER_1]->GetPosition() });
+					//player->Scale({ 0.75f,0.75f,0.75f });
+					//player->setBody(true);
+					//
+					//bodyParts.push_back(player);
 
 				}
 			}
@@ -117,7 +124,7 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 
 void OnePlayer::die() {
 	//resets player when touching object
-	players[PLAYER_1]->setPos(glm::vec3(0.0f, 0.0f, 0.0f)); // wall collision resets position
+	play1->setPos(glm::vec3(0.0f, 0.0f, 0.0f)); // wall collision resets position
 
 	while (bodyParts.size() > 0) {
 		bodyParts.pop_back();
@@ -181,7 +188,6 @@ void OnePlayer::LoadScene()
 
 	Material* DiceTex = new Material("dice-texture.png", "d6-normal.png");
 	Material* D20Tex = new Material("d20-texture.png");
-	Material* SwordTex = new Material("sword-texture.png", "sword-norm.png");
 	Material* defaultTex = new Material("default-texture.png", "default-texture.png");
 
 	sun = new DirectionalLight(glm::normalize(glm::vec3(5.0f, 25.0f, 0.5f)), { 1.0f, 1.0f, 1.0f }, 0.1f, 0.2f, 0.2f);
@@ -196,7 +202,14 @@ void OnePlayer::LoadScene()
 	players[PLAYER_1]->Scale({ 0.75f,0.75f,0.75f });
 	players[PLAYER_1]->Move({ 0.0f, 0.3f, 0.0f });
 
-	Player play1(Square, DiceTex, basicCubeHB);
+	tail_mesh = Square;
+	tail_mat = defaultTex;
+	tail_hit = basicCubeHB;
+
+	play1 = new Player(Square, DiceTex, basicCubeHB);
+	play1->Scale({ 0.75f,0.75f,0.75f });
+	play1->Move({ 0.0f, 0.3f, 0.0f });
+	//play1->Add(tail_mesh, tail_mat, tail_hit);
 
 	//LinkedList<Object*> stuff;
 	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
@@ -207,6 +220,7 @@ void OnePlayer::LoadScene()
 	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
 	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
 
+	//Tia //Spawning the first pellet
 	Object* pellet = new Object(Square, defaultTex, basicCubeHB);
 
 	float random1 = (rand() % (10 - (-10))) + (-10);
@@ -256,6 +270,14 @@ void OnePlayer::LoadScene()
 	DebugShader = new Shader("Shaders/debug.vert", "Shaders/debug.frag");
 	DebugQuad = new Mesh(square, 4, square_index, 6);
 }
+
+
+
+
+
+
+
+//GDW STUFF BELOW, NOT FOR SNAKE
 
 
 
@@ -315,7 +337,6 @@ void TwoPlayer::LoadScene()
 
 	Material* DiceTex = new Material("d6-normal.png");
 	Material* D20Tex = new Material("d20-texture.png");
-	Material* SwordTex = new Material("sword-texture.png", "sword-norm.png");
 	Material* defaultTex = new Material("default-texture.png", "default-texture.png");
 
 	//sun = new DirectionalLight(glm::normalize(glm::vec3(1.5f, 1.0f, 0.5f)), { 1.0f, 1.0f, 1.0f }, 0.1f, 0.5f, 1.0f);
