@@ -88,15 +88,19 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 		//		die();
 		//	}
 		//}
+		for (int i = 2; i < play1->Size(); i++) { // Check to see if body hit detects with the head
+			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(play1->getNext(i)->hitbox), play1->getNext(i)->GetTransform())) {
+				die();
+			}
+		}
 
-		for (int i = 0; i < terrain.size(); i++) {
-			if (players[PLAYER_1]->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(terrain[i]->hitbox), terrain[i]->GetTransform())) {
+		for (int i = 0; i < terrain.size(); i++) { // Check to see if snake hits objects
+			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(terrain[i]->hitbox), terrain[i]->GetTransform())) {
 				//std::cout << ("HIT DETECTED");
-				if (!terrain[i]->getPellet()) {
-					//players[PLAYER_1]->Move(m * -1.0f * PLAYER_SPEED * dt);  //This WOULD make the player stop when touching an object/wall
+				if (!terrain[i]->getPellet()) { //identifies if the object is a pellet of an object
 					die();
 				} 
-				else {
+				else { 
 					//Tia // randomly places pellets, and spawns them
 					glm::vec3 n = glm::vec3(0.0f, 0.6f, 0.0f);
 					float random1 = (rand() % (10 - (-10))) + (-10);
@@ -105,16 +109,6 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 					terrain[i]->setPos(n);
 
 					play1->Add(tail_mesh, tail_mat, tail_hit);
-					
-					//Material* defaultTex = new Material("default-texture.png", "default-texture.png");
-					//Hitbox* basicCubeHB = new CubeHitbox(1.0f, 1.0f, 1.0f);
-					//Mesh* Square = new Mesh("d6.obj");
-					//Object* player = new Object(Square, defaultTex, basicCubeHB);
-					//player->Move({ players[PLAYER_1]->GetPosition() });
-					//player->Scale({ 0.75f,0.75f,0.75f });
-					//player->setBody(true);
-					//
-					//bodyParts.push_back(player);
 
 				}
 			}
@@ -126,9 +120,7 @@ void OnePlayer::die() {
 	//resets player when touching object
 	play1->setPos(glm::vec3(0.0f, 0.0f, 0.0f)); // wall collision resets position
 
-	while (bodyParts.size() > 0) {
-		bodyParts.pop_back();
-	}
+	play1->deleteSnake();
 }
 
 void OnePlayer::Update(float dt)

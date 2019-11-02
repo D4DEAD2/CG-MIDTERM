@@ -4,8 +4,9 @@
 #include<vector>
 
 class Camera;
+class CubeHitbox;
 
-class Segment : public Object{
+class Segment : public Object {
 
 	Segment* next = nullptr;
 	glm::vec3 nextMove = glm::vec3(0.0f);
@@ -23,7 +24,9 @@ public:
 	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
 	void Move(glm::vec3 dir);
 	void Scale(glm::vec3 scl);
+	
 	Segment* GetNext() { return next; }
+	void removeLast() { next = nullptr; }
 	void SetNext(Segment* s) { next = s; }
 
 	void SetNextMv(glm::vec3);
@@ -47,11 +50,14 @@ public:
 
 
 	void Add(Mesh* me, Material* ma, Hitbox* hb);
+	void deleteSnake();
+
 	int Size() { return size; }
 	void Move(glm::vec3 dir);
 	void Scale(glm::vec3 scl);
 	void Draw(Shader* shdr, std::vector<Camera*> cam);
 	Segment* getHead();
+	Segment* getNext(int _size);
 	void setPos(glm::vec3 _pos);
 
 	Transform GetTransform() { return head->GetTransform(); }

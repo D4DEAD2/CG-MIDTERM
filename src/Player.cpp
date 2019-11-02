@@ -1,7 +1,6 @@
 #include "Player.h"
 #include"Mesh.h"
 #include"Texture.h"
-#include"Hitbox.h"
 
 
 Player::Player()
@@ -79,33 +78,42 @@ void Segment::Scale(glm::vec3 scl)
 
 void Segment::SetNextMv(glm::vec3 dir)
 {
-	nextMove = dir;
+	nextMove = dir; //
 }
 
 void Segment::ApplyMv()
 {
-	Move(curMove);
-	if (next != nullptr) {
-		next->SetNextMv(curMove);
-		next->ApplyMv();
+	Move(curMove); //the current direction this piece is moving
+	if (next != nullptr) { //if the next block exists
+		next->SetNextMv(curMove); // their previous next move is now their current move
+		next->ApplyMv();  //it then applys their movement and moves to the next part of the body
 	}
-	curMove = nextMove;
+	curMove = nextMove; // this loop is done and then its the next one
 }
 
 void Player::Add(Mesh* me, Material* ma, Hitbox* hb)
 {
 	Segment* cur = head;
-	while(cur->GetNext()!= nullptr) {
+	while(cur->GetNext()!= nullptr) { //loop until the next body part doesnt exist
 		cur = cur->GetNext();
 	}
 
-	glm::vec3 pos = cur->GetPosition();
+	glm::vec3 pos = cur->GetPosition(); //get the last body part's location
 
-	Segment* next = new Segment(me, ma, hb, pos);
-	next->Scale({ 0.75, 0.75, 0.75 });
+	Segment* next = new Segment(me, ma, hb, pos); //create new body part on that location
+	next->Scale({ 0.75, 0.75, 0.75 }); //scale it to the head's size
 
-	cur->SetNext(next);
+	cur->SetNext(next); //sets this new body part to be apart of the next cycle
 	size++;
+}
+
+void Player::deleteSnake()
+{
+	while(size > 1) { //size 1 = only head remains
+		Segment* cur = head; // starts at the head
+		cur->removeLast(); //sets the next value to null
+		size = 1; //resets your size
+	}
 }
 
 void Player::Move(glm::vec3 dir)
@@ -129,6 +137,16 @@ void Player::Draw(Shader* shdr, std::vector<Camera*> cam)
 Segment* Player::getHead()
 {
 	return head;
+}
+
+Segment* Player::getNext(int _size)
+{
+	Segment* cur = head;
+	for (int i = 1; i < _size; i++) { //loop until the next body part doesnt exist
+		cur = cur->GetNext();
+	}
+
+	return cur;
 }
 
 void Player::setPos(glm::vec3 _pos)
