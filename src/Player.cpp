@@ -142,7 +142,7 @@ Segment* Player::getHead()
 Segment* Player::getNext(int _size)
 {
 	Segment* cur = head;
-	for (int i = 1; i < _size; i++) { //loop until the next body part doesnt exist
+	for (int i = 0; i < _size; i++) { //loop until the next body part doesnt exist
 		cur = cur->GetNext();
 	}
 

@@ -81,17 +81,41 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 		else {
 			move_count += dt;
 		}
-		//for (int b = 0; b < bodyParts.size(); b++) {
-		//	bodyParts[b]->Move(bodyParts[b]->getLast() * PLAYER_SPEED * dt); // move body in the past directions to generate a follow
-		//
-		//	if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(bodyParts[b]->hitbox), bodyParts[b]->GetTransform())) {
-		//		die();
-		//	}
-		//}
+
 		for (int i = 2; i < play1->Size(); i++) { // Check to see if body hit detects with the head
 			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(play1->getNext(i)->hitbox), play1->getNext(i)->GetTransform())) {
 				die();
 			}
+		}
+
+		if (play1->getHead()->GetPosition().x > 12.0f) {
+			play1->setPos(glm::vec3(-11.5f, play1->getHead()->GetPosition().y, play1->getHead()->GetPosition().z));
+		}
+		else if (play1->getHead()->GetPosition().x < -12.0f) {
+			play1->setPos(glm::vec3(11.5f, play1->getHead()->GetPosition().y, play1->getHead()->GetPosition().z));
+		}
+		else if (play1->getHead()->GetPosition().z > 10.0f) {
+			play1->setPos(glm::vec3(play1->getHead()->GetPosition().x, play1->getHead()->GetPosition().y, -8.5f));
+		}
+		else if (play1->getHead()->GetPosition().z < -9.0f) {
+			play1->setPos(glm::vec3(play1->getHead()->GetPosition().x, play1->getHead()->GetPosition().y, 9.5f));
+		}
+
+		for (int i = 0; i < play1->Size(); i++) {
+
+			if (play1->getNext(i)->GetPosition().x > 12.0f) {
+				play1->getNext(i)->setPos(glm::vec3(-11.5f, play1->getNext(i)->GetPosition().y, play1->getNext(i)->GetPosition().z));
+			}
+			else if (play1->getNext(i)->GetPosition().x < -12.0f) {
+				play1->getNext(i)->setPos(glm::vec3(11.5f, play1->getNext(i)->GetPosition().y, play1->getNext(i)->GetPosition().z));
+			}
+			else if (play1->getNext(i)->GetPosition().z > 10.0f) {
+				play1->getNext(i)->setPos(glm::vec3(play1->getNext(i)->GetPosition().x, play1->getNext(i)->GetPosition().y, -8.5f));
+			}
+			else if (play1->getNext(i)->GetPosition().z < -9.0f) {
+				play1->getNext(i)->setPos(glm::vec3(play1->getNext(i)->GetPosition().x, play1->getNext(i)->GetPosition().y, 9.5f));
+			}
+
 		}
 
 		for (int i = 0; i < terrain.size(); i++) { // Check to see if snake hits objects
@@ -180,6 +204,7 @@ void OnePlayer::LoadScene()
 
 	Material* DiceTex = new Material("dice-texture.png", "d6-normal.png");
 	Material* D20Tex = new Material("d20-texture.png");
+	Material* snakeHead = new Material("snakeheadtexture.png");
 	Material* defaultTex = new Material("default-texture.png", "default-texture.png");
 
 	sun = new DirectionalLight(glm::normalize(glm::vec3(5.0f, 25.0f, 0.5f)), { 1.0f, 1.0f, 1.0f }, 0.1f, 0.2f, 0.2f);
@@ -198,7 +223,7 @@ void OnePlayer::LoadScene()
 	tail_mat = defaultTex;
 	tail_hit = basicCubeHB;
 
-	play1 = new Player(Square, DiceTex, basicCubeHB);
+	play1 = new Player(Square, snakeHead, basicCubeHB);
 	play1->Scale({ 0.75f,0.75f,0.75f });
 	play1->Move({ 0.0f, 0.3f, 0.0f });
 	//play1->Add(tail_mesh, tail_mat, tail_hit);
@@ -225,25 +250,25 @@ void OnePlayer::LoadScene()
 
 	Object* botWall = new Object(Square, defaultTex, basicCubeHB);
 	botWall->Move({ 0.0f, 1.0f, -9.5f });
-	botWall->Scale({ 30.0f, 2.0f, 2.0f });
+	botWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(botWall);
 
 	Object* topWall = new Object(Square, defaultTex, basicCubeHB);
 	topWall->Move({ 0.0f, 1.0f, 9.0f });
-	topWall->Scale({ 30.0f, 2.0f, 2.0f });
+	topWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(topWall);
 
 	Object* rightWall = new Object(Square, defaultTex, basicCubeHB);
 	rightWall->Move({ 12.0f, 1.0f, 0.0f });
-	rightWall->Scale({ 2.0f, 2.0f, 30.0f });
+	rightWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(rightWall);
 
 	Object* leftWall = new Object(Square, defaultTex, basicCubeHB);
 	leftWall->Move({ -12.0f, 1.0f, 0.0f });
-	leftWall->Scale({ 2.0f, 2.0f, 30.0f });
+	leftWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(leftWall);
 
@@ -255,7 +280,7 @@ void OnePlayer::LoadScene()
 
 
 	Cam = {
-		new Camera(glm::vec3(0.0f, 23.0f, 5.0f), {0.0f, 0.0f, 0.0f}, glm::vec4(0,0, SCREEN_WIDTH, SCREEN_HEIGHT))
+		new Camera(glm::vec3(0.0f, 23.0f, 2.0f), {0.0f, 0.0f, 0.0f}, glm::vec4(0,0, SCREEN_WIDTH, SCREEN_HEIGHT))
 	};
 
 	// DEBUG THINGS
