@@ -22,6 +22,9 @@ class OnePlayer: public PlayScene {
 	Material* score_mat;
 	Hitbox* score_hit;
 
+	Material* pellet_mat;
+	Material* sPellet_mat;
+
 	bool debug = false;
 	bool f3_pressed;
 	int disp_depth = 0;
@@ -32,6 +35,7 @@ public:
 	OnePlayer();
 
 	void die();
+	void gainPoint();
 
 	// Inherited via Scene
 	virtual void InputHandle(GLFWwindow* window, glm::vec2 mousePos, float dt) override;

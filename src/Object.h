@@ -36,7 +36,7 @@ protected:
 	Material* material;
 	Transform transform;
 	bool isPellet = false;
-	bool isBody = false;
+	bool isSpc = false;
 
 
 public:
@@ -49,16 +49,16 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw(Shader* shader, std::vector<Camera*> cam);
 	void Rotate(glm::vec3 rot);
+	void setRot(glm::vec3 rot);
 	void Rotate(float tht, glm::vec3 dir);
 	void Move(glm::vec3 dir);
 	void Scale(glm::vec3 scl);
-	void setLast(glm::vec3 _pos); //
 	void setPos(glm::vec3 _pos);
-	glm::vec3 getLast();			///
+	void setMat(Material* ma);
 	void setPellet(bool _val);		///tia
 	bool getPellet();
-	void setBody(bool _val);
-	bool getBody(); //
+	void setSpc(bool _val);
+	bool getSpc(); //
 
 	glm::vec3 GetPosition() { return transform.position; };
 	Transform GetTransform() { return transform; }

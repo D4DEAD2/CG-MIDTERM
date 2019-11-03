@@ -70,6 +70,11 @@ void Object::Rotate(glm::vec3 rot) {
 	transform.rotation += rot;
 }
 
+void Object::setRot(glm::vec3 rot)
+{
+	transform.rotation = rot;
+}
+
 void Object::Move(glm::vec3 dir)
 {
 	transform.position += dir;
@@ -80,20 +85,14 @@ void Object::Scale(glm::vec3 scl)
 	transform.scale = scl;
 }
 
-void Object::setLast(glm::vec3 _pos)
-{
-	transform.position = _pos;
-}
-
 void Object::setPos(glm::vec3 _pos)
 {
 	transform.position = _pos;
 }
 
-glm::vec3 Object::getLast()
+void Object::setMat(Material* ma)
 {
-
-	return transform.position;
+	material = ma;
 }
 
 void Object::setPellet(bool _val)
@@ -106,12 +105,12 @@ bool Object::getPellet()
 	return isPellet;
 }
 
-void Object::setBody(bool _val)
+void Object::setSpc(bool _val)
 {
-	isBody = _val;
+	isSpc = _val;
 }
 
-bool Object::getBody()
+bool Object::getSpc()
 {
-	return isBody;
+	return isSpc;
 }

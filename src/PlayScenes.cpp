@@ -15,7 +15,6 @@
 #include"Constants.h"
 #include"Test_Primitives.h"
 #include"Hitbox.h"
-#include "LinkedList.h"
 #include "Player.h"
 
 
@@ -57,22 +56,39 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 {
 	static glm::vec3 m = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	//directional movement bases off of which key you press and doesn't let you go directly backwards.
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && m != glm::vec3(0.0f, 0.0f, 1.0f))
 		m = glm::vec3(0.0f, 0.0f, -1.0f);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && m != glm::vec3(0.0f, 0.0f, -1.0f))
 		m = glm::vec3(0.0f, 0.0f, 1.0f);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && m != glm::vec3(1.0f, 0.0f, 0.0f))
 		m = glm::vec3(-1.0f, 0.0f, 0.0f);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && m != glm::vec3(-1.0f, 0.0f, 0.0f))
 		m = glm::vec3(1.0f, 0.0f, 0.0f);
 	if (m.x != 0.0f || m.y != 0.0f || m.z != 0.0f) {
-		if (move_count > 0.1) {
-			play1->Move(m * PLAYER_SPEED);
+		if (move_count > 0.1) { // makes snake move every 0.1 second instead of a steady flow
+			play1->Move(m * PLAYER_SPEED); // moves player m being the direction they move.
+			if (m.x == 1.0f) {
+				play1->setRot(glm::vec3(0.0f, 180.0f, 0.0f));
+			} else if (m.x == -1.0f) {
+				play1->setRot(glm::vec3(0.0f, 0.0f, 0.0f));
+			} else if (m.z == 1.0f) { 
+				play1->setRot(glm::vec3(0.0f, 90.0f, 0.0f));
+			} else if (m.z == -1.0f) {
+				play1->setRot(glm::vec3(0.0f, -90.0f, 0.0f));
+			}
+
+			if (play1->getTwice()) { // if you got a special pellet after one movement cycle your next point shows up so you dont collide with it
+				play1->setTwice(false);
+				gainPoint();
+			}
+
 			move_count = 0;
-		}
+			
+		} 
 		else {
 			move_count += dt;
-		}
+		} 
 
 		for (int i = 2; i < play1->Size(); i++) { // Check to see if body hit detects with the head
 			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(play1->getNext(i)->hitbox), play1->getNext(i)->GetTransform())) {
@@ -119,27 +135,50 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 					die();
 				} 
 				else { 
-					//Tia // randomly places pellets, and spawns them
+					if (terrain[i]->getSpc()) { // if pellet is special, player gains two points instead of one.
+						gainPoint();
+						play1->setTwice(true);
+						//gainPoint();
+					}
+					else {
+						gainPoint();
+					}
+
+					//Tia // randomly places pellets, and spawns them //
 					glm::vec3 n = glm::vec3(0.0f, 0.6f, 0.0f);
 					float random1 = (rand() % (10 - (-10))) + (-10);
 					float random2 = (rand() % (7 - (-7))) + (-7);
-					n += glm::vec3(random1, 0.0f, random2);
-					terrain[i]->setPos(n);
+					n += glm::vec3(random1, 0.0f, random2); ////////////
+					random1 = (rand() % (3 - 1)) + 1; // Decides if the next pellet will be special or not //
 
-					 // Points increase
+					if (random1 == 1) {
 
-					Object* point = new Object(score_mesh, score_mat, score_hit);
-					point->Move({ -10.0f + score.size(), 2.0f, 8.0f});
-					point->Scale({ 0.5f, 0.5f, 0.5f });
-					
-					score.push_back(point);
-					
-					play1->Add(tail_mesh, tail_mat, tail_hit); // Tail grows
+						terrain[i]->setSpc(true);
+						terrain[i]->Scale(glm::vec3(1.2f));
+						terrain[i]->setMat(sPellet_mat);
+					}
+					else {
+						terrain[i]->setSpc(false);
+						terrain[i]->Scale(glm::vec3(0.6f));
+						terrain[i]->setMat(pellet_mat);
+					} ///////////////////////////////////////////////////////////////////////////////////////
+
+					terrain[i]->setPos(n); // sets new position of the pellet
 
 				}
 			}
 		}
 	}
+}
+void OnePlayer::gainPoint() {
+	// Points increase
+	Object* point = new Object(score_mesh, score_mat, score_hit);
+	point->Move({ -10.0f + score.size(), 2.0f, 8.0f });
+	point->Scale({ 0.5f, 0.5f, 0.5f });
+
+	score.push_back(point);
+
+	play1->Add(tail_mesh, tail_mat, tail_hit); // Tail grows
 }
 
 void OnePlayer::die() {
@@ -210,11 +249,16 @@ void OnePlayer::LoadScene()
 	Material* DiceTex = new Material("dice-texture.png", "d6-normal.png");
 	Material* D20Tex = new Material("d20-texture.png");
 	Material* snakeHead = new Material("snakeheadtexture.png");
+	Material* snakeBody = new Material("snaketexture.png");
+	Material* pelletTex = new Material("default-pellet.png");
+	Material* sPelletTex = new Material("special-pellet.png");
+	Material* pointTex = new Material("score-texture.png");
+	Material* objTex = new Material("obstacletexture.png");
 	Material* defaultTex = new Material("default-texture.png", "default-texture.png");
 
-	sun = new DirectionalLight(glm::normalize(glm::vec3(5.0f, 25.0f, 0.5f)), { 1.0f, 1.0f, 1.0f }, 0.1f, 0.2f, 0.2f);
+	sun = new DirectionalLight(glm::normalize(glm::vec3(0.0f, 5.0f, 0.0f)), { 1.0f, 1.0f, 1.0f }, 0.1f, 0.2f, 0.2f);
 	//lights.push_back(new PointLight({ 0.5f, 30.0f, 0.5f }, { 1.0f, 0.0f, 0.0f }, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, 0.3f, 0.5f, 1.0f, 0.014f, 0.0007f));
-	lights.push_back(new PointLight({ -4.0f, 3.0f, 4.0f }, { 1.0f, 1.0f, 1.0f }, 0.1f, 0.5f, 1.0f, 0.07f, 0.017f));
+	//lights.push_back(new PointLight({ -4.0f, 3.0f, 4.0f }, { 1.0f, 1.0f, 1.0f }, 0.1f, 0.5f, 1.0f, 0.07f, 0.017f));
 
 	Mesh* Square = new Mesh("d6.obj");
 	Mesh* d20 = new Mesh("d20.obj");
@@ -225,12 +269,15 @@ void OnePlayer::LoadScene()
 	players[PLAYER_1]->Move({ 0.0f, 0.3f, 0.0f });
 
 	tail_mesh = Square;
-	tail_mat = defaultTex;
+	tail_mat = snakeBody;
 	tail_hit = basicCubeHB;
 
 	score_mesh = Square;
-	score_mat = defaultTex;
+	score_mat = pointTex;
 	score_hit = basicCubeHB;
+
+	pellet_mat = pelletTex;
+	sPellet_mat = sPelletTex;
 
 	play1 = new Player(Square, snakeHead, basicCubeHB);
 	play1->Scale({ 0.75f,0.75f,0.75f });
@@ -238,35 +285,35 @@ void OnePlayer::LoadScene()
 	//play1->Add(tail_mesh, tail_mat, tail_hit);
 
 	//Tia //Spawning the first pellet
-	Object* pellet = new Object(Square, defaultTex, basicCubeHB);
+	Object* pellet = new Object(Square, pellet_mat, basicCubeHB);
 
 	float random1 = (rand() % (10 - (-10))) + (-10);
 	float random2 = (rand() % (7 - (-7))) + (-7);
 	pellet->Move({ random1, 0.6f, random2 });
-	pellet->Scale({ 0.6f, 0.6f, 0.6f });
+	pellet->Scale({ 0.6f, 0.6f, 0.6f }); 
 	pellet->setPellet(true);
 
 	terrain.push_back(pellet);
 
-	Object* botWall = new Object(Square, defaultTex, basicCubeHB);
+	Object* botWall = new Object(Square, objTex, basicCubeHB);
 	botWall->Move({ 0.0f, 1.0f, -9.5f });
 	botWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(botWall);
 
-	Object* topWall = new Object(Square, defaultTex, basicCubeHB);
+	Object* topWall = new Object(Square, objTex, basicCubeHB);
 	topWall->Move({ 0.0f, 1.0f, 9.0f });
 	topWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(topWall);
 
-	Object* rightWall = new Object(Square, defaultTex, basicCubeHB);
+	Object* rightWall = new Object(Square, objTex, basicCubeHB);
 	rightWall->Move({ 12.0f, 1.0f, 0.0f });
 	rightWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(rightWall);
 
-	Object* leftWall = new Object(Square, defaultTex, basicCubeHB);
+	Object* leftWall = new Object(Square, objTex, basicCubeHB);
 	leftWall->Move({ -12.0f, 1.0f, 0.0f });
 	leftWall->Scale({ 2.0f, 2.0f, 2.0f });
 

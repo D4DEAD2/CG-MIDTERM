@@ -24,6 +24,7 @@ public:
 	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
 	void Move(glm::vec3 dir);
 	void Scale(glm::vec3 scl);
+	void setRot(glm::vec3 rot);
 	
 	Segment* GetNext() { return next; }
 	void removeLast() { next = nullptr; }
@@ -37,6 +38,8 @@ public:
 
 class Player
 {
+private:
+	bool twice = false;
 	int size = 0;
 	Segment* head;
 
@@ -50,10 +53,14 @@ public:
 	void Add(Mesh* me, Material* ma, Hitbox* hb);
 	void deleteSnake();
 
+	void setTwice(bool _two) { twice = _two; }
+	bool getTwice() { return twice; }
 	int Size() { return size; }
 	void Move(glm::vec3 dir);
 	void Scale(glm::vec3 scl);
 	void Draw(Shader* shdr, std::vector<Camera*> cam);
+
+	void setRot(glm::vec3 rot);
 	Segment* getHead();
 	Segment* getNext(int _size);
 	void setPos(glm::vec3 _pos);

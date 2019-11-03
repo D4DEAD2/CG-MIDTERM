@@ -74,6 +74,11 @@ void Segment::Scale(glm::vec3 scl)
 	Object::Scale(scl);
 }
 
+void Segment::setRot(glm::vec3 rot)
+{
+	Object::setRot(rot);
+}
+
 void Segment::SetNextMv(glm::vec3 dir)
 {
 	nextMove = dir; // sets the next move to to given direction
@@ -130,6 +135,11 @@ void Player::Draw(Shader* shdr, std::vector<Camera*> cam)
 	if (head != nullptr) { // if head exists, draw it.
 		head->Draw(shdr, cam); 
 	}
+}
+
+void Player::setRot(glm::vec3 rot)
+{
+	head->setRot(rot);
 }
 
 Segment* Player::getHead()
