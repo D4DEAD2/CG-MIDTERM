@@ -92,7 +92,7 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 
 		for (int i = 2; i < play1->Size(); i++) { // Check to see if body hit detects with the head
 			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(play1->getNext(i)->hitbox), play1->getNext(i)->GetTransform())) {
-				die();
+				die(); //if it hits the head, it dies
 			}
 		}
 
@@ -132,16 +132,15 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 			if (play1->getHead()->hitbox->HitDetect(play1->GetTransform(), (CubeHitbox*)(terrain[i]->hitbox), terrain[i]->GetTransform())) {
 				//std::cout << ("HIT DETECTED");
 				if (!terrain[i]->getPellet()) { //identifies if the object is a pellet of an object
-					die();
+					die(); // the object was an obstacle, snake dies
 				} 
 				else { 
 					if (terrain[i]->getSpc()) { // if pellet is special, player gains two points instead of one.
-						gainPoint();
-						play1->setTwice(true);
-						//gainPoint();
+						gainPoint(); // gains point for collecting pellet
+						play1->setTwice(true); // variable allows player to get their next point when it wont collide with them
 					}
 					else {
-						gainPoint();
+						gainPoint(); // gains point for collecting pellet
 					}
 
 					//Tia // randomly places pellets, and spawns them //

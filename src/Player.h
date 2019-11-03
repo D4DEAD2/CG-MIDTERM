@@ -17,14 +17,6 @@ public:
 	Segment(Mesh* me, Material* ma, Hitbox* hb);
 	Segment(Mesh* me, Material* ma, Hitbox* hb, glm::vec3 pos);
 	~Segment();
-
-
-	//Inherited?
-	virtual void Update(float dt);
-	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
-	void Move(glm::vec3 dir);
-	void Scale(glm::vec3 scl);
-	void setRot(glm::vec3 rot);
 	
 	Segment* GetNext() { return next; }
 	void removeLast() { next = nullptr; }
@@ -33,6 +25,12 @@ public:
 	void SetNextMv(glm::vec3);
 	void ApplyMv();
 
+	//Inherited
+	virtual void Update(float dt);
+	virtual void Draw(Shader* shdr, std::vector<Camera*> cam);
+	void Move(glm::vec3 dir);
+	void Scale(glm::vec3 scl);
+	void setRot(glm::vec3 rot);
 	Transform GetTransform() { return transform; }
 };
 
