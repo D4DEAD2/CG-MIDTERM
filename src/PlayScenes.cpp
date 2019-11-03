@@ -153,7 +153,7 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 					if (random1 == 1) {
 
 						terrain[i]->setSpc(true);
-						terrain[i]->Scale(glm::vec3(1.2f));
+						terrain[i]->Scale(glm::vec3(0.8f));
 						terrain[i]->setMat(sPellet_mat);
 					}
 					else {
