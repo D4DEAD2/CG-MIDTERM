@@ -108,8 +108,8 @@ void PlayScene::RenderScene(Shader* shader)
 		terrain[t]->Draw(shader, Cam);
 	}
 
-	for (int b = 0; b < bodyParts.size(); b++) {
-		bodyParts[b]->Draw(shader, Cam);
+	for (int s = 0; s < score.size(); s++) {
+		score[s]->Draw(shader, Cam);
 	}
 
 	play1->Draw(shader, Cam);

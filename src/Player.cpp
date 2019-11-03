@@ -104,7 +104,7 @@ void Player::Add(Mesh* me, Material* ma, Hitbox* hb)
 	next->Scale({ 0.75, 0.75, 0.75 }); //scale it to the head's size
 
 	cur->SetNext(next); //sets this new body part to be apart of the next cycle
-	size++;
+	size++; // size increases by 1.
 }
 
 void Player::deleteSnake()

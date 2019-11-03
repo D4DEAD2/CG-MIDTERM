@@ -76,7 +76,7 @@ public:
 class PlayScene : public Scene {
 protected:
 	std::vector<Object*> players;
-	std::vector<Object*> bodyParts;
+	std::vector<Object*> score;
 	std::vector<Object*> terrain; //tia // pellets are terrain
 	Player* play1;
 

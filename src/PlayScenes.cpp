@@ -56,14 +56,6 @@ void OnePlayer::InputHandle(GLFWwindow* window, glm::vec2 mousePos, float dt)
 void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player, float dt)
 {
 	static glm::vec3 m = glm::vec3(0.0f, 0.0f, 0.0f);
-	
-	//if (bodyParts.size() > 0) {
-	//	bodyParts[0]->setLast(m); //find the last position before m actually changes to the new direction
-	//}
-	//for (int b = 1; b < bodyParts.size(); b++) {
-	//	int l = b - 1;
-	//	bodyParts[b]->setLast(bodyParts[l]->getLast()); //find the last positions of other body parts
-	//}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -88,8 +80,9 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 			}
 		}
 
-		if (play1->getHead()->GetPosition().x > 12.0f) {
-			play1->setPos(glm::vec3(-11.5f, play1->getHead()->GetPosition().y, play1->getHead()->GetPosition().z));
+		// head teleporting
+		if (play1->getHead()->GetPosition().x > 12.0f) { // if the head's x position is above 12
+			play1->setPos(glm::vec3(-11.5f, play1->getHead()->GetPosition().y, play1->getHead()->GetPosition().z)); // teleport player to opposite side of map
 		}
 		else if (play1->getHead()->GetPosition().x < -12.0f) {
 			play1->setPos(glm::vec3(11.5f, play1->getHead()->GetPosition().y, play1->getHead()->GetPosition().z));
@@ -101,6 +94,7 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 			play1->setPos(glm::vec3(play1->getHead()->GetPosition().x, play1->getHead()->GetPosition().y, 9.5f));
 		}
 
+		//body teleporting
 		for (int i = 0; i < play1->Size(); i++) {
 
 			if (play1->getNext(i)->GetPosition().x > 12.0f) {
@@ -132,7 +126,15 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 					n += glm::vec3(random1, 0.0f, random2);
 					terrain[i]->setPos(n);
 
-					play1->Add(tail_mesh, tail_mat, tail_hit);
+					 // Points increase
+
+					Object* point = new Object(score_mesh, score_mat, score_hit);
+					point->Move({ -10.0f + score.size(), 2.0f, 8.0f});
+					point->Scale({ 0.5f, 0.5f, 0.5f });
+					
+					score.push_back(point);
+					
+					play1->Add(tail_mesh, tail_mat, tail_hit); // Tail grows
 
 				}
 			}
@@ -142,8 +144,11 @@ void OnePlayer::KeyboardInput(GLFWwindow* window, glm::vec2 mousePos, int player
 
 void OnePlayer::die() {
 	//resets player when touching object
-	play1->setPos(glm::vec3(0.0f, 0.0f, 0.0f)); // wall collision resets position
-
+	play1->setPos(glm::vec3(0.0f, 0.0f, 0.0f)); // resets position
+	points = score.size(); // this would go on the leaderboard if there was one.
+	while (score.size() > 0) { // resets points
+		score.pop_back();
+	}
 	play1->deleteSnake();
 }
 
@@ -223,19 +228,14 @@ void OnePlayer::LoadScene()
 	tail_mat = defaultTex;
 	tail_hit = basicCubeHB;
 
+	score_mesh = Square;
+	score_mat = defaultTex;
+	score_hit = basicCubeHB;
+
 	play1 = new Player(Square, snakeHead, basicCubeHB);
 	play1->Scale({ 0.75f,0.75f,0.75f });
 	play1->Move({ 0.0f, 0.3f, 0.0f });
 	//play1->Add(tail_mesh, tail_mat, tail_hit);
-
-	//LinkedList<Object*> stuff;
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
-	//stuff.Add(new Object(Square, DiceTex, basicCubeHB));
 
 	//Tia //Spawning the first pellet
 	Object* pellet = new Object(Square, defaultTex, basicCubeHB);

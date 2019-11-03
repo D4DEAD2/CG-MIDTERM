@@ -18,10 +18,15 @@ class OnePlayer: public PlayScene {
 	Material* tail_mat;
 	Hitbox* tail_hit;
 
+	Mesh* score_mesh;
+	Material* score_mat;
+	Hitbox* score_hit;
+
 	bool debug = false;
 	bool f3_pressed;
 	int disp_depth = 0;
 	float move_count = 0.0f;
+	int points = 0;
 
 public:
 	OnePlayer();

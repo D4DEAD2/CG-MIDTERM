@@ -1,5 +1,7 @@
 #pragma once
 
+//referenced code from OOC snake
+
 template<class T>
 class Link {
 private:
