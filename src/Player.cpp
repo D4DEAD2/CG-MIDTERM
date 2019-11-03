@@ -6,14 +6,12 @@
 Player::Player()
 {
 	size = 0;
-	lives = 3;
 	head = nullptr;
 }
 
 Player::Player(Mesh* me, Material* ma, Hitbox* hb)
 {
 	size = 1;
-	lives = 3;
 	head = new Segment(me, ma, hb);
 }
 
@@ -78,15 +76,15 @@ void Segment::Scale(glm::vec3 scl)
 
 void Segment::SetNextMv(glm::vec3 dir)
 {
-	nextMove = dir; //
+	nextMove = dir; // sets the next move to to given direction
 }
 
 void Segment::ApplyMv()
 {
 	Move(curMove); //the current direction this piece is moving
 	if (next != nullptr) { //if the next block exists
-		next->SetNextMv(curMove); // their previous next move is now their current move
-		next->ApplyMv();  //it then applys their movement and moves to the next part of the body
+		next->SetNextMv(curMove); // passes current move down to the next bodypart
+		next->ApplyMv();  //recalls the function for the next bodypart
 	}
 	curMove = nextMove; // this loop is done and then its the next one
 }
@@ -118,19 +116,19 @@ void Player::deleteSnake()
 
 void Player::Move(glm::vec3 dir)
 {
-	head->SetNextMv(dir);
-	head->ApplyMv();
+	head->SetNextMv(dir); //sets the next direction as the direction given
+	head->ApplyMv(); // applies current direction
 }
 
 void Player::Scale(glm::vec3 scl)
 {
-	head->Scale(scl);
+	head->Scale(scl); // scaling player actually scale's player's head
 }
 
 void Player::Draw(Shader* shdr, std::vector<Camera*> cam)
 {
-	if (head != nullptr) {
-		head->Draw(shdr, cam);
+	if (head != nullptr) { // if head exists, draw it.
+		head->Draw(shdr, cam); 
 	}
 }
 
@@ -151,5 +149,5 @@ Segment* Player::getNext(int _size)
 
 void Player::setPos(glm::vec3 _pos)
 {
-	head->setPos(_pos);
+	head->setPos(_pos); // setting player's position actually set's player's head's position
 }

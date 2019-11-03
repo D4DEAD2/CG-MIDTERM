@@ -37,8 +37,6 @@ public:
 
 class Player
 {
-	int lives;
-	//float speed;
 	int size = 0;
 	Segment* head;
 

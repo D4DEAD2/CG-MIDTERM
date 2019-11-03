@@ -104,14 +104,14 @@ void PlayScene::RenderScene(Shader* shader)
 	//}
 
 	//tia //terrain is walls AND pellets.
-	for (int t = 0; t < terrain.size(); t++) {
+	for (int t = 0; t < terrain.size(); t++) { // brings the terrain into the scene by how many there is
 		terrain[t]->Draw(shader, Cam);
 	}
 
-	for (int s = 0; s < score.size(); s++) {
+	for (int s = 0; s < score.size(); s++) { // brings the score into the scene by how many there is
 		score[s]->Draw(shader, Cam);
 	}
 
-	play1->Draw(shader, Cam);
+	play1->Draw(shader, Cam); // calls the player draw function.
 	
 }
