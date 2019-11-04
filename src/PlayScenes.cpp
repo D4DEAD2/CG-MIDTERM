@@ -295,25 +295,25 @@ void OnePlayer::LoadScene()
 	terrain.push_back(pellet);
 
 	Object* botWall = new Object(Square, objTex, basicCubeHB);
-	botWall->Move({ 0.0f, 1.0f, -9.5f });
+	botWall->Move({ 0.0f, 1.0f, -8.0f });
 	botWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(botWall);
 
 	Object* topWall = new Object(Square, objTex, basicCubeHB);
-	topWall->Move({ 0.0f, 1.0f, 9.0f });
+	topWall->Move({ 0.0f, 1.0f, 8.0f });
 	topWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(topWall);
 
 	Object* rightWall = new Object(Square, objTex, basicCubeHB);
-	rightWall->Move({ 12.0f, 1.0f, 0.0f });
+	rightWall->Move({ 11.0f, 1.0f, 0.0f });
 	rightWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(rightWall);
 
 	Object* leftWall = new Object(Square, objTex, basicCubeHB);
-	leftWall->Move({ -12.0f, 1.0f, 0.0f });
+	leftWall->Move({ -11.0f, 1.0f, 0.0f });
 	leftWall->Scale({ 2.0f, 2.0f, 2.0f });
 
 	terrain.push_back(leftWall);
